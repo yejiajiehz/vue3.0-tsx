@@ -1,20 +1,18 @@
 # Vue3.0 + tsx 开发模式
 
 ## 前言
-
-### 为什么使用 tsx
-
-1. 更好的 ts 支持，智能提示和 lint
-2. 更加灵活（原生 js）的语法
-
 ### 简介
 
 本文主要介绍在 vue3.0 下 tsx 组件的书写方式
 
 请先阅读 vue3.0 文档、typescript 文档以及 jsx 语法
 
-**对应 vue@3.0.11，不保证后续版本更新之后还适用**
+**基于 2021年4月份 vue@3.0.11，不保证后续版本更新之后还适用**
 
+### 为什么使用 tsx
+
+1. 更好的 ts 支持，智能提示和 lint
+2. 更加灵活（原生 js）的语法
 
 ## 定义组件的几种方法
 
@@ -274,6 +272,18 @@ export const C = defineComponent<Omit<P2PropsType, 'a'> & { d: string }>({
 });
 
 C3.props = P2Props;
+```
+
+> vue 提供了 ExtractPropTypes，从 props 对象转换为 type。
+> 暂时没找到从组件提取 props type 的方式
+```
+const props = {
+  type: String,
+};
+
+type PropType = ExtractPropTypes<typeof props>;
+= 
+type PropType = { type?: string; }
 ```
 
 ### 性能
