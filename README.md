@@ -271,7 +271,7 @@ export const C = defineComponent<Omit<P2PropsType, 'a'> & { d: string }>({
   },
 });
 
-C3.props = P2Props;
+C3.props = { ...P2Props, d: String };
 ```
 
 > vue 提供了 ExtractPropTypes，从 props 对象转换为 type。
