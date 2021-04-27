@@ -196,11 +196,11 @@ const B5 = B5Wrap<{ name: string; age: number }>();
 #### functionComponent  vs  defineComponent
 
 1. 执行逻辑
-	1. functionComponent 每次在 props or attrs 变化的时候都被执行
-	2. defineComponent setup 只在初始化时，执行一次
+    1. functionComponent 每次在 props or attrs 变化的时候都被执行
+    2. defineComponent setup 只在初始化时，执行一次
 2. functionComponent
-     2. 避免使用 ref、reactive 维护状态，会导致非预期的效果
-     2. 避免使用生命周期函数
+    1. 避免使用 ref、reactive 维护状态，会导致非预期的效果
+    2. 避免使用生命周期函数
 
 建议：
 
