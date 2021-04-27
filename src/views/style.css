@@ -1,0 +1,10 @@
+.home {
+  display: flex;
+  outline: 1px solid #ccc;
+  padding: 20px;
+}
+
+.home > div {
+  border: 1px solid #ccc;
+  margin: 10px;
+}
