@@ -16,7 +16,7 @@
 
 ## 定义组件的几种方法
 
-### 1. function component
+### 1. functional component
 
 ```typescript
 import { defineComponent, HTMLAttributes, SetupContext } from "vue";
@@ -193,19 +193,19 @@ const B5 = B5Wrap<{ name: string; age: number }>();
 
 所有的写法都是为了达成上述两个目标
 
-#### functionComponent  vs  defineComponent
+#### functional component vs defineComponent
 
 1. 执行逻辑
-    1. functionComponent 每次在 props or attrs 变化的时候都被执行
+    1. functional component 每次在 props or attrs 变化的时候都被执行
     2. defineComponent setup 只在初始化时，执行一次
-2. functionComponent
+2. functional component
     1. 避免使用 ref、reactive 维护状态，会导致非预期的效果
     2. 避免使用生命周期函数
 
 建议：
 
-1. 纯展示组件使用 functionComponent
-2. 业务组件使用defineComponent，定义 props 对象，自动推导类型
+1. 纯展示组件使用 functional component。注意：[作为 router component 请设置 displayName 属性](https://github.com/vuejs/vue-router-next/blob/4037749afbd7d50786baa6718d5e632e2a8af17f/src/navigationGuards.ts#L296)。
+2. 业务组件使用 defineComponent，定义 props 对象，自动推导类型
 
 ## 一些痒点
 ### 指令
