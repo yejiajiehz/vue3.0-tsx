@@ -12,7 +12,49 @@
 ### 为什么使用 tsx
 
 1. 更好的 ts 支持，智能提示和 lint
-2. 更加灵活（原生 js）的语法
+2. 更加灵活的语法（原生 js）
+#### slot vs js 对象
+
+VNode 在 template 中需要使用 slot 封装，在 tsx 中，VNode 也是普通的对象
+
+> 所有都是对象！
+
+```
+type TemplateCoplayable = {
+  text: string,
+  onCopy: function,
+  tooltip: false,
+}
+
+<a-typography-paragraph copyable content="Custom Copy icon and replace tooltips text.">
+  <template v-slot:copyableIcon="{ copied }">
+    <SmileOutlined v-if="!copied" key="copy-icon" />
+    <SmileFilled v-else key="copied-icon" />
+  </template>
+  <template v-slot:copyableTooltip="{ copied }">
+    <span v-if="!copied" key="copy-tooltip">click here</span>
+    <span v-else key="copied-tooltip">you clicked!!</span>
+  </template>
+</a-typography-paragraph>
+```
+
+```types
+<Paragraph
+  copyable={{
+    icon: [<SmileOutlined key="copy-icon" />, <SmileFilled key="copied-icon" />],
+    tooltips: ['click here', 'you clicked!!'],
+  }}
+>
+  Custom Copy icon and replace tooltips text.
+</Paragraph>
+
+type TSXCopyable = {
+  text: string,
+  onCopy: function,
+  icon: ReactNode,
+  tooltips: false | [ReactNode, ReactNode],
+}
+```
 
 ## 定义组件的几种方法
 
@@ -292,12 +334,90 @@ type PropType = { type?: string; }
 
 ## 意犹未尽 Composition API
 
-useXXX 逻辑与表现分离
+将状态的逻辑从组件中抽象出来，逻辑与表现分离。逻辑复用、可测试
+
+#### useRequest
+```typescript
+...
+setup() {
+  const loading = ref(false)
+  const data = ref()
+  const error = ref('')
+
+  async function fetchUser() {
+    loading.value = true
+    try {
+      data.value = await getUser()
+    } catch(e) {
+      error = e.message
+    } finally {
+      loading.value = false
+    }
+  }
+
+  onMount(() => { fetchUser() })
+
+
+  return () => {
+    if (loading) return <Spin />
+    if (error) return <Alert type="error">{error}</Alert>
+    
+    return <div>{data.name}</div>
+  }
+}
+```
+
+
+```typescript
+import userRequest from 'useRequest'
+
+...
+setup() {
+  const { error, data, loading, run } = useRequest(getUser, { manual: true })
+
+  onMount(() => { run() })
+
+  return () => {
+    if (loading) return <Spin />
+    if (error) return <Alert type="error">{error}</Alert>
+    
+    return <div>{data.name}</div>
+  }
+}
+```
+
 推荐 https://ahooks.js.org/hooks/async
 
+
+#### 业务实际场景，计算上传速率
+```typescript
+import { ref, Ref, watch } from "vue" 
+
+export function useSpeed(value: Ref<number>) {
+  const speed = ref(0)
+
+  const now = Date.now()
+  watch(value, (current) => {
+    speed.value = current / ((Date.now() - now) / 1000)
+  })
+
+  return speed
+}
+```
+
+#### 封装业务代码
+
+### 理想中的开发模式
+1. 逻辑 + 状态：useXXX
+2. render: functional component
+3. container: 组合上述 
+
+所有的业务逻辑封装到 useXXX，所有的组件为纯函数组件，container 负责将状态和渲染整合到一起
 ## 展望未来
 屏蔽掉框架的内部的逻辑，从开发体验上保持一致
 React + hooks + mobx ≈ vue + composition  + tsx
 
 ## 参考文档
-1. [jsx-next](https://github.com/vuejs/jsx-next)
+1. [vue3 官网](https://v3.vuejs.org/guide/composition-api-introduction.html#why-composition-api)
+2. [jsx-next](https://github.com/vuejs/jsx-next)
+3. [ahooks](https://ahooks.js.org/hooks/async)
