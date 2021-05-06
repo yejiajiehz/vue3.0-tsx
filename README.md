@@ -267,8 +267,8 @@ const B5 = B5Wrap<{ name: string; age: number }>();
 ### 类型定义
 
 1. Props 建议继承 HTMLAttributes，以便使用 attrs 中的 style 和 class
-
-2. 封装组件场景下的继承 props
+2. emit vs callback，emit 无法在 tsx 中被识别。详情见讨论：[[TypeScript / TSX] Make component events type safe, both emitting and listening #1553](https://github.com/vuejs/vue-next/issues/1553)
+3. 封装组件场景下的继承 props
    1. 建议父组件导出 props 以便复用
    2. 在父组件没有提供 props 的情况下，尝试自行推导 props 类型：src/views/type.tsx + 2.4 模式创建组件
 
