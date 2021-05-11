@@ -53,10 +53,6 @@ export const B1 = defineComponent({
   },
 });
 
-try {
-
-} finally
-
 // 2.1 defineComponent and render
 export const B2 = defineComponent({
   name: "B2",

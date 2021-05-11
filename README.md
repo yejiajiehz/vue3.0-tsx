@@ -19,7 +19,7 @@ VNode 在 template 中需要使用 slot 封装，在 tsx 中，VNode 也是普�
 
 > 所有都是对象！
 
-```
+```typescript
 type TemplateCoplayable = {
   text: string,
   onCopy: function,
@@ -75,7 +75,7 @@ function A(props: IAProps, ctx: SetupContext) {
 A.props = ["name"];
 ```
 
-### 2. defindComponent
+### 2. defineComponent
 
 ### 2.1 setup 
 
