@@ -39,7 +39,7 @@ export const B1 = defineComponent({
   props: { name: String },
   setup(props) {
     const innerValue = ref(0);
-    console.log("B1 render");
+    console.log("B1 setup");
 
     return () => (
       <div
@@ -58,11 +58,15 @@ export const B2 = defineComponent({
   name: "B2",
   props: { name: String },
   setup(props, ctx) {
+    console.log("B2 setup");
+
     return {
       type: "B2",
     };
   },
   render() {
+    console.log("B2 render");
+
     return (
       <div>
         {/* NOTE: this is props and setup return value */}

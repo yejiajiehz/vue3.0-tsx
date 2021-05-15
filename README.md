@@ -334,7 +334,7 @@ type PropType = { type?: string; }
 
 ## 意犹未尽 Composition API
 
-将状态的逻辑从组件中抽象出来，逻辑与表现分离。逻辑复用、可测试
+将状态和逻辑从组件中抽象出来，逻辑与表现分离。逻辑复用、可测试
 
 #### useRequest
 ```typescript
