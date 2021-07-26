@@ -299,10 +299,10 @@ export const P = defineComponent({
 });
 
 // 获取 props 类型，此时 PPropsType ≈ {a?: stirng, b?:stirng, c?: stirng}
-type PPropsType = GetPropsType<typeof P>;
+type ParentPropsType = GetPropsType<typeof P>;
 
 // 使用 2.4 模式创建
-export const C = defineComponent<Omit<P2PropsType, 'a'> & { d: string }>({
+export const C = defineComponent<Omit<ParentPropsType, 'a'> & { d: string }>({
   setup(props) {
     return () => (
       <div>
@@ -313,7 +313,7 @@ export const C = defineComponent<Omit<P2PropsType, 'a'> & { d: string }>({
   },
 });
 
-C3.props = { ...P2Props, d: String };
+C3.props = { ...P.props, d: String };
 ```
 
 > vue 提供了 ExtractPropTypes，从 props 对象转换为 type。

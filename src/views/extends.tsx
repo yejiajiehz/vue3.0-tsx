@@ -35,14 +35,14 @@ export const C1 = defineComponent({
 });
 
 // 导出 props 对象
-const P2Props = {
+const ParentProps = {
   a: String,
   b: String,
   c: String,
 };
 
 export const P2 = defineComponent({
-  props: P2Props,
+  props: ParentProps,
   render() {
     return (
       <div>
@@ -55,7 +55,7 @@ export const P2 = defineComponent({
 // 使用该对象
 export const C2 = defineComponent({
   props: {
-    ...P2Props,
+    ...ParentProps,
     d: String,
   },
   render() {
@@ -68,9 +68,10 @@ export const C2 = defineComponent({
   },
 });
 
-type P2PropsType = GetPropsType<typeof P1>;
+// 类型推导模式
+type ParentPropsType = GetPropsType<typeof P1>;
 
-export const C3 = defineComponent<P2PropsType & { d: string }>({
+export const C3 = defineComponent<ParentPropsType & { d: string }>({
   setup(props) {
     return () => (
       <div>
@@ -81,7 +82,7 @@ export const C3 = defineComponent<P2PropsType & { d: string }>({
   },
 });
 
-C3.props = P2Props;
+C3.props = ParentProps;
 
 export default function () {
   return (
