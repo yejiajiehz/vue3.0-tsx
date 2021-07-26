@@ -421,3 +421,21 @@ React + hooks + mobx ≈ vue + composition  + tsx
 1. [vue3 官网](https://v3.vuejs.org/guide/composition-api-introduction.html#why-composition-api)
 2. [jsx-next](https://github.com/vuejs/jsx-next)
 3. [ahooks](https://ahooks.js.org/hooks/async)
+
+
+## vue2.0 + @vue/composition-api
+
+### jsx
+
+1. 使用 emit 替代 onXX 回调
+```
+<P on={{ cllick: () => {} }} />
+
+<C>
+  <div onClick={() => this.$emit('click', abc)} />
+</C>
+```
+2. 使用 `{...{ attrs: inputAttrs }}` 替代 `{...inputAttrs }`
+3. 使用 `domPropsInnerHTML` 替代 `v-html`
+4. functional component 不支持
+5. ref 只能使用字符串模式  ref="setupVarName"
