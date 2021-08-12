@@ -427,6 +427,8 @@ React + hooks + mobx ≈ vue + composition  + tsx
 
 ### jsx
 
+
+0. 使用 [vue/jex](https://github.com/vuejs/jsx)
 1. 使用 emit 替代 onXX 回调
 ```
 <P on={{ cllick: () => {} }} />
@@ -437,5 +439,5 @@ React + hooks + mobx ≈ vue + composition  + tsx
 ```
 2. 使用 `{...{ attrs: inputAttrs }}` 替代 `{...inputAttrs }`
 3. 使用 `domPropsInnerHTML` 替代 `v-html`
-4. functional component 不支持
+4. ~~functional component 不支持~~，2021.8.12 functional 只支持 jsx 文件，不支持 tsx 文件，待确认
 5. ref 只能使用字符串模式  ref="setupVarName"
