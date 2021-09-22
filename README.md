@@ -423,13 +423,13 @@ React + hooks + mobx ≈ vue + composition  + tsx
 3. [ahooks](https://ahooks.js.org/hooks/async)
 
 
-## vue2.0 + @vue/composition-api
+## vue2.0 + @vue/composition-api + antdv
 
 ### jsx
 
 
 0. 使用 [vue/jex](https://github.com/vuejs/jsx)
-1. 使用 emit 替代 onXX 回调
+1. 使用 emit 替代 onXX 回调: vue 会将 onXXX 自动转换，[https://github.com/vuejs/jsx/issues/105]
 ```
 <P on={{ cllick: () => {} }} />
 
@@ -437,7 +437,66 @@ React + hooks + mobx ≈ vue + composition  + tsx
   <div onClick={() => this.$emit('click', abc)} />
 </C>
 ```
-2. 使用 `{...{ attrs: inputAttrs }}` 替代 `{...inputAttrs }`
+2. spread 使用 `{...{ attrs: inputAttrs, props: inputProps }}` 替代 `{...inputAttrs }`
 3. 使用 `domPropsInnerHTML` 替代 `v-html`
 4. ~~functional component 不支持~~，2021.8.12 functional 只支持 jsx 文件，不支持 tsx 文件，待确认
 5. ref 只能使用字符串模式  ref="setupVarName"
+6. ui 组件库的 tsx 支持，以 antdv 举例
+
+首先参考 [composition-api](https://github.com/vuejs/composition-api) 在项目中添加
+```typescript
+// file: shim-tsx.d.ts
+import Vue, { VNode } from 'vue';
+import { ComponentRenderProxy } from '@vue/composition-api';
+
+declare global {
+  namespace JSX {
+    interface Element extends VNode {}
+    interface ElementClass extends ComponentRenderProxy {}
+    interface ElementAttributesProperty {
+      $props: any; // specify the property name to use
+    }
+    interface IntrinsicElements {
+      [elem: string]: any;
+    }
+  }
+}
+```
+
+然后将 antdv 的 class 转换为 props 属性
+
+```typescript
+import type { Button as AButton, Input as AInput } from 'ant-design-vue';
+
+type AnyFunc = (...args: any[]) => any;
+
+
+// 修正 style 属性
+type FixStyle<T> = Omit<T, 'style'> & { style: Partial<CSSStyleDeclaration> };
+
+type Props<T, U = HTMLElement> = Partial<
+  T
+  // 使用原始的 html 支持，比如 id，name，style 等
+  & Omit<FixStyle<U>, keyof T>
+  & {
+    // className 别名
+    class?: string;
+    key?: string;
+    // on={{ click: () => {}, cancel: () => {} }}
+    on?: Record<string, AnyFunc>;
+    // onClick={ () => { } }， typescript 4.4 支持
+    [key: `on${string}`]: any;
+    children?: any;
+  }
+>;
+
+declare module 'ant-design-vue' {
+  class Button { $props: Props<AButton, HTMLButtonElement> }
+  class Input {
+    $props: Props<AInput, HTMLInputElement>;
+    // XXX: 子组件目前没有简单的办法处理
+    // ts-error: Subsequent property declarations must have the same type.
+    // static TextArea: { $props: Props<typeof AInput.TextArea, HTMLInputElement> };
+  }
+}
+```
