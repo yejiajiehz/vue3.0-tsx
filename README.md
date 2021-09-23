@@ -463,7 +463,7 @@ declare global {
 }
 ```
 
-然后将 antdv 的 class 转换为 props 属性
+然后将 antdv 的 class 转换为 props 属性，参考 [typescript JSX](https://www.typescriptlang.org/docs/handbook/jsx.html)
 
 ```typescript
 import type { Button as AButton, Input as AInput } from 'ant-design-vue';
