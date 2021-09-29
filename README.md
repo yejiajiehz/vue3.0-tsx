@@ -446,57 +446,79 @@ React + hooks + mobx ≈ vue + composition  + tsx
 首先参考 [composition-api](https://github.com/vuejs/composition-api) 在项目中添加
 ```typescript
 // file: shim-tsx.d.ts
-import Vue, { VNode } from 'vue';
+import { VNode } from 'vue';
 import { ComponentRenderProxy } from '@vue/composition-api';
 
+type AnyFunc = (...args: any[]) => any;
+
+// tsx 支持
+interface VueAttributes {
+  key?: string | number;
+  slot?: string;
+  scopedSlots?: Record<string, AnyFunc>;
+  ref?: string;
+  class?: string;
+  children?: any;
+  domProps?: { [key: string]: any };
+  on?: Record<string, AnyFunc>;
+  // typescript 4.4 支持
+  [key: `on${string}`]: any;
+}
+
+// 设置内置属性可可选
+type PartialField<T, U extends string> = Partial<Omit<T, U>> &
+  { [key in U]?: key extends keyof T ? Partial<T[key]> : any };
+
+// 默认属性，如 id，name，style 等
+type HTMLAttributes<T = HTMLElement> = PartialField<T, 'style'> & VueAttributes;
+
 declare global {
+  // https://www.typescriptlang.org/docs/handbook/jsx.html
   namespace JSX {
     interface Element extends VNode {}
     interface ElementClass extends ComponentRenderProxy {}
     interface ElementAttributesProperty {
       $props: any; // specify the property name to use
     }
+
+    // 内置元素
     interface IntrinsicElements {
+      // 内置标签，为了更好的提醒，可以在这里定义 HTML tag
+      div: HTMLAttributes<HTMLDivElement>;
       [elem: string]: any;
     }
   }
 }
+
 ```
 
 然后将 antdv 的 class 转换为 props 属性，参考 [typescript JSX](https://www.typescriptlang.org/docs/handbook/jsx.html)
 
 ```typescript
+import { HTMLAttributes } from './shims-tsx';
 import type { Button as AButton, Input as AInput } from 'ant-design-vue';
 
-type AnyFunc = (...args: any[]) => any;
-
-
-// 修正 style 属性
-type FixStyle<T> = Omit<T, 'style'> & { style: Partial<CSSStyleDeclaration> };
-
-type Props<T, U = HTMLElement> = Partial<
-  T
-  // 使用原始的 html 支持，比如 id，name，style 等
-  & Omit<FixStyle<U>, keyof T>
-  & {
-    // className 别名
-    class?: string;
-    key?: string;
-    // on={{ click: () => {}, cancel: () => {} }}
-    on?: Record<string, AnyFunc>;
-    // onClick={ () => { } }， typescript 4.4 支持
-    [key: `on${string}`]: any;
-    children?: any;
-  }
->;
+// 属性封装
+type Props<T, U = HTMLElement> = Partial<T> & Omit<HTMLAttributes<U>, keyof T>;
 
 declare module 'ant-design-vue' {
   class Button { $props: Props<AButton, HTMLButtonElement> }
-  class Input {
-    $props: Props<AInput, HTMLInputElement>;
-    // XXX: 子组件目前没有简单的办法处理
-    // ts-error: Subsequent property declarations must have the same type.
-    // static TextArea: { $props: Props<typeof AInput.TextArea, HTMLInputElement> };
-  }
 }
+
+// 子组件定义
+
+// 如 InputTextArea 使用方式
+// import { Input } from 'gd-antd'
+// import { InputTextArea } from 'shims-antd'
+// const TextArea = Input.TextArea as InputTextArea
+// const v = <TextArea />
+
+import { TextArea } from 'ant-design-vue/types/input/textarea'
+
+interface Component<T> {
+  new (...args: any[]): T
+}
+
+declare class _InputTextArea extends Vue { $props: Props<TextArea, HTMLTextAreaElement> }
+type InputTextArea = Component<_InputTextArea>
 ```
