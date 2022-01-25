@@ -428,7 +428,7 @@ React + hooks + mobx ≈ vue + composition  + tsx
 ### jsx
 
 
-0. 使用 [vue/jex](https://github.com/vuejs/jsx)
+0. 使用 [vue/jsx](https://github.com/vuejs/jsx)
 1. 使用 emit 替代 onXX 回调: vue 会将 onXXX 自动转换，[https://github.com/vuejs/jsx/issues/105]
 ```
 <P on={{ cllick: () => {} }} />
