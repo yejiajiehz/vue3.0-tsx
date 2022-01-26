@@ -449,18 +449,16 @@ React + hooks + mobx ≈ vue + composition  + tsx
 import { VNode } from 'vue';
 import { ComponentRenderProxy } from '@vue/composition-api';
 
-type AnyFunc = (...args: any[]) => any;
-
 // tsx 支持
 interface VueAttributes {
   key?: string | number;
   slot?: string;
-  scopedSlots?: Record<string, AnyFunc>;
+  scopedSlots?: Record<string, Function>;
   ref?: string;
   class?: string;
   children?: any;
   domProps?: { [key: string]: any };
-  on?: Record<string, AnyFunc>;
+  on?: Record<string, Function | Function[]>;
   // typescript 4.4 支持
   [key: `on${string}`]: any;
 }
@@ -480,6 +478,8 @@ declare global {
     interface ElementAttributesProperty {
       $props: any; // specify the property name to use
     }
+    
+    interface IntrinsicAttributes extends VueAttributes {}
 
     // 内置元素
     interface IntrinsicElements {
